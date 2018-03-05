@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import routes from 'routes';
 import createRoutes from 'helpers/createRoutes';
 import store from 'helpers/configureStore';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import Header from 'components/Header';
 
@@ -17,10 +18,12 @@ const App = () => {
   return (
     <Provider store={store}>
       <Router>
-        <div>
-          <Header />
-          {createRoutes(routes)}
-        </div>
+        <MuiThemeProvider>
+          <div>
+            <Header />
+            {createRoutes(routes)}
+          </div>
+        </MuiThemeProvider>
       </Router>
     </Provider>
   );

@@ -1,12 +1,13 @@
 import React from 'react';
-import ExampleForm from 'forms/ExampleForm';
 
 import style from './style.css';
+
+import MainForm from './forms/mainForm';
 
 const MainPage = () => {
   return (
     <div className={style.page}>
-      <ExampleForm />
+      <MainForm />
     </div>
   );
 };

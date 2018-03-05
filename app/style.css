@@ -6,19 +6,4 @@
   margin: 0;
 }
 
-:global(body) {
-  background-color: rgba(55, 71, 79, 1);
-  font-family: 'Baloo', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-}
-:global(a) {
-  color: wheat;
-  text-decoration: none;
-}
 
-:global(#root) {
-  width: 100%;
-}
