@@ -1,8 +1,9 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, getFormValues } from 'redux-form';
 import { connect } from 'react-redux';
 import { RaisedButton, Divider } from 'material-ui';
 import MyCheckBox from '../fields/MyCheckBox/';
+import MyCheckBoxGroup from '../fields/MyCheckBoxGroup/';
 import MyRadioButtonGroup from '../fields/MyRadioButtonGroup/';
 import MySelectField from '../fields/MySelectField/';
 import MyTextField from '../fields/MyTextField/';
@@ -44,20 +45,38 @@ const radioGroupValues = [
   }
 ];
 
+const checkBoxGroupvalues = [
+  {
+    label: 'checkBox1'
+  },
+  {
+    label: 'checkBox3'
+  },
+  {
+    label: 'checkBox2'
+  }
+];
+
 const defaultState = {
-  firstName: 'Mr Ass',
+  firstName: 'Kek',
   gender: 'AH-64',
   radioBoxGroup: 'no',
-  checkBox2: true
+  checkBoxGroup: ['checkBox1']
 };
 
-const _MainForm = ({ handleSubmit, reset }) => {
+const _MainForm = ({ handleSubmit, reset, valid }) => {
   return (
     <form className={style['main-form']} onSubmit={handleSubmit}>
       <div className={style.inputBlock}>
         <label htmlFor="firstName">Name</label>
         <div>
-          <Field id="firstName" name="firstName" component={MyTextField} type="Some forms" placeholder="First Name" />
+          <Field
+            id="firstName"
+            name="firstName"
+            component={MyTextField}
+            warn={val => (val.length > 3 ? undefined : 'too short')}
+            placeholder="First Name"
+          />
         </div>
       </div>
       <Divider />
@@ -114,32 +133,59 @@ const _MainForm = ({ handleSubmit, reset }) => {
       <Divider />
 
       <div className={style.checkBoxGroup}>
-        <label htmlFor="radioBoxGroup">RadioBoxGroup</label>
+        <label htmlFor="radioBoxGroup">CkechBoxGroup</label>
         <div>
-          <Field id="checkBox1" name="checkBox1" label="checkbox1" component={MyCheckBox} />
-          <Field id="checkBox2" name="checkBox2" label="checkbox2" component={MyCheckBox} />
-          <Field id="checkBox3" name="checkBox3" label="checkbox3" component={MyCheckBox} />
+          <Field
+            id="checkBoxGroup"
+            name="checkBoxGroup"
+            component={MyCheckBoxGroup}
+            buttonValues={radioGroupValues}
+            checkboxes={checkBoxGroupvalues}
+          />
         </div>
       </div>
-
       <Divider />
 
-      <RaisedButton label="Reset" primary onClick={reset} />
-      <RaisedButton
-        label="Submit"
-        secondary
-        onClick={() => {
-          reset();
-          handleSubmit();
-        }}
-      />
+      <div className={style.emailField}>
+        <div>
+          <Field className={style.email} name="email" component={MyTextField} floatingLabelText="Email" />
+        </div>
+      </div>
+      <Divider />
+
+      <div className={style.buttonsBlock}>
+        <RaisedButton label="Reset" primary={!valid} onClick={reset} />
+        <RaisedButton
+          label="Submit"
+          secondary
+          disabled={!valid}
+          onClick={() => {
+            handleSubmit();
+          }}
+        />
+      </div>
     </form>
   );
 };
 
+const validate = values => {
+  const emailValidRegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+
+  const errors = {};
+
+  if (!values.email) {
+    errors.email = 'Email required';
+  } else if (!emailValidRegExp.test(values.email)) {
+    errors.email = 'Bad email';
+  }
+
+  return errors;
+};
+
 const MainForm = reduxForm({
   form: 'main-form',
-  enableReinitialize: false // allow the form the reinitialize with new "pristine" values every time the initialValues prop changes
+  validate,
+  enableReinitialize: true // allow the form the reinitialize with new "pristine" values every time the initialValues prop changes
 })(_MainForm);
 
 const mapStateToProps = (state, ownProps) => {

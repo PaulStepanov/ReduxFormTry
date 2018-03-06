@@ -7,3 +7,17 @@
     display: flex;
     flex-direction: column;
 }
+
+.email {
+    width: 50%!important;
+}
+
+.buttonsBlock {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+
+    & > div {
+        flex-basis: 30%;
+    }
+}

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { getFormValues } from 'redux-form';
 import JSONPretty from 'react-json-pretty';
+import { connect } from 'react-redux';
 
 import style from './style.css';
 
@@ -10,7 +12,7 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      values: { }
+      submitValues: {}
     };
   }
 
@@ -19,14 +21,21 @@ class MainPage extends Component {
       <div className={style.page}>
         <MainForm
           onSubmit={values => {
-            this.setState({ values });
+            this.setState({ submitValues: values });
           }}
         />
+        <p>Current values:</p>
+        <JSONPretty json={this.props.values} />
         <p>Submitted values:</p>
-        <JSONPretty json={this.state.values} />
+        <JSONPretty json={this.state.submitValues} />
       </div>
     );
   }
 }
 
-export default MainPage;
+export default connect(
+  state => ({
+    values: getFormValues('main-form')(state)
+  }),
+  () => {}
+)(MainPage);
