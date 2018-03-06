@@ -1,7 +1,11 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { TextField, RaisedButton, SelectField, MenuItem } from 'material-ui';
 import { connect } from 'react-redux';
+import { RaisedButton, Divider } from 'material-ui';
+import MyCheckBox from '../fields/MyCheckBox/';
+import MyRadioButtonGroup from '../fields/MyRadioButtonGroup/';
+import MySelectField from '../fields/MySelectField/';
+import MyTextField from '../fields/MyTextField/';
 
 import style from './style.scss';
 
@@ -15,10 +19,6 @@ const genderMenuItemValues = [
     primaryText: 'Female'
   },
   {
-    value: 'Transgender',
-    primaryText: 'Transgender'
-  },
-  {
     value: 'AH-64',
     primaryText: 'AH 64 Attack helicopter'
   },
@@ -28,56 +28,47 @@ const genderMenuItemValues = [
   }
 ];
 
-const renderTextField = ({ input, label, meta: { touched, error }, ...custom }) => (
-  <TextField hintText={label} errorText={touched && error} {...input} {...custom} />
-);
-
-class MySelectField extends PureComponent {
-  state = {
-    value: null,
-  };
-
-  handleChange = (event, index, value) => this.setState({ value });
-
-  render() {
-    const { input, label, meta: { touched, error }, floatingLabelText, menuItems, ...custom } = this.props;
-    return (
-      <div>
-        <SelectField floatingLabelText={floatingLabelText} value={input.value}>
-          {menuItems.map(mi => <MenuItem key={Math.random() * 1000} {...mi} />)}
-        </SelectField>
-      </div>
-    );
+const radioGroupValues = [
+  {
+    value: 'yes',
+    label: 'yes'
+  },
+  {
+    value: 'no',
+    label: 'no'
+  },
+  {
+    value: 'disabled',
+    label: 'disabled',
+    disabled: true
   }
-}
+];
 
 const defaultState = {
   firstName: 'Mr Ass',
-  gender: 'AH-64'
+  gender: 'AH-64',
+  radioBoxGroup: 'no',
+  checkBox2: true
 };
 
-const _MainForm = ({ handleSubmit, pristine, reset, submitting }) => {
+const _MainForm = ({ handleSubmit, reset }) => {
   return (
     <form className={style['main-form']} onSubmit={handleSubmit}>
       <div className={style.inputBlock}>
         <label htmlFor="firstName">Name</label>
         <div>
-          <Field
-            id="firstName"
-            name="firstName"
-            component={renderTextField}
-            type="Some forms"
-            placeholder="First Name"
-          />
+          <Field id="firstName" name="firstName" component={MyTextField} type="Some forms" placeholder="First Name" />
         </div>
       </div>
+      <Divider />
 
       <div className={style.inputBlock}>
         <label htmlFor="surname">Surname</label>
         <div>
-          <Field id="surname" name="surname" component={renderTextField} type="Some forms" placeholder="Surn name" />
+          <Field id="surname" name="surname" component={MyTextField} type="Some forms" placeholder="Surn name" />
         </div>
       </div>
+      <Divider />
 
       <div className={style.inputBlock}>
         <label htmlFor="textArea">TextArea</label>
@@ -85,7 +76,7 @@ const _MainForm = ({ handleSubmit, pristine, reset, submitting }) => {
           <Field
             id="textArea"
             name="textArea"
-            component={renderTextField}
+            component={MyTextField}
             type="Some forms"
             floatingLabelText="MultiLine and FloatingLabel"
             multiLine
@@ -93,9 +84,10 @@ const _MainForm = ({ handleSubmit, pristine, reset, submitting }) => {
           />
         </div>
       </div>
+      <Divider />
 
       <div className={style.inputBlock}>
-        <label htmlFor="selectField">TextArea</label>
+        <label htmlFor="select">SelectField</label>
         <div>
           <Field
             id="select"
@@ -106,20 +98,58 @@ const _MainForm = ({ handleSubmit, pristine, reset, submitting }) => {
           />
         </div>
       </div>
+      <Divider />
+
+      <div className={style.radioBoxGroup}>
+        <label htmlFor="radioBoxGroup">RadioBoxGroup</label>
+        <div>
+          <Field
+            id="radioBoxGroup"
+            name="radioBoxGroup"
+            component={MyRadioButtonGroup}
+            buttonValues={radioGroupValues}
+          />
+        </div>
+      </div>
+      <Divider />
+
+      <div className={style.checkBoxGroup}>
+        <label htmlFor="radioBoxGroup">RadioBoxGroup</label>
+        <div>
+          <Field id="checkBox1" name="checkBox1" label="checkbox1" component={MyCheckBox} />
+          <Field id="checkBox2" name="checkBox2" label="checkbox2" component={MyCheckBox} />
+          <Field id="checkBox3" name="checkBox3" label="checkbox3" component={MyCheckBox} />
+        </div>
+      </div>
+
+      <Divider />
 
       <RaisedButton label="Reset" primary onClick={reset} />
-      <RaisedButton label="Submit" secondary onClick={reset} />
+      <RaisedButton
+        label="Submit"
+        secondary
+        onClick={() => {
+          reset();
+          handleSubmit();
+        }}
+      />
     </form>
   );
 };
 
 const MainForm = reduxForm({
-  form: 'main-form'
+  form: 'main-form',
+  enableReinitialize: false // allow the form the reinitialize with new "pristine" values every time the initialValues prop changes
 })(_MainForm);
 
 const mapStateToProps = (state, ownProps) => {
+  const initialValues = ownProps.initialValues ? ownProps.initialValues : defaultState;
+
   return {
-    initialValues: ownProps.initialValues ? ownProps.initialValues : defaultState
+    initialValues: {
+      ...defaultState,
+      ...initialValues
+    }
   };
 };
 
