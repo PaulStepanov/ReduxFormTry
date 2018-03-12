@@ -7,6 +7,8 @@ import MyCheckBoxGroup from '../fields/MyCheckBoxGroup/';
 import MyRadioButtonGroup from '../fields/MyRadioButtonGroup/';
 import MySelectField from '../fields/MySelectField/';
 import MyTextField from '../fields/MyTextField/';
+import ColorPicker from '../fields/ColorPicker';
+import GoogleMap from '../fields/GoogleMap';
 
 import style from './style.scss';
 
@@ -57,8 +59,10 @@ const checkBoxGroupvalues = [
   }
 ];
 
+const colors = ['#4286f4', '#47B8D6', '#E7B86A'];
+
 const defaultState = {
-  firstName: 'Kek',
+  firstName: 'Test name',
   gender: 'AH-64',
   radioBoxGroup: 'no',
   checkBoxGroup: ['checkBox1']
@@ -149,6 +153,26 @@ const _MainForm = ({ handleSubmit, reset, valid }) => {
       <div className={style.emailField}>
         <div>
           <Field className={style.email} name="email" component={MyTextField} floatingLabelText="Email" />
+        </div>
+      </div>
+
+      <div className={style.colorPicker}>
+        <div>
+          <Field name="colorPicker" component={ColorPicker} colors={colors} />
+        </div>
+      </div>
+      <Divider />
+
+      <div className={style.googleMap}>
+        <div>
+          <Field
+            name="googleMap"
+            component={GoogleMap}
+            intialCenter={{
+              lat: -17.832405,
+              lng: 31.0283851
+            }}
+          />
         </div>
       </div>
       <Divider />

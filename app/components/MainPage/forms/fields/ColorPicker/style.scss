@@ -1,0 +1,21 @@
+.circle {
+  width: 20px;
+  height: 20px;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+  margin-left: 7px; 
+}
+
+.selected {
+    border: 1px solid green;
+}
+
+.colorPicker {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
+
+    margin: 20px 10px;
+}
